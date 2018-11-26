@@ -18,18 +18,42 @@
 			repo: 'git@github.com:fortress-fight/css.git',
 			loadSidebar: true,
 			subMaxLevel: 3,
-			autoHeader: true,
 			formatUpdated: '{MM}/{DD} {HH}:{mm}',
-			auto2top: true
+			auto2top: true,
+
+			search: {
+				maxAge: 86400000, // 过期时间，单位毫秒，默认一天
+				paths: [], // or 'auto'
+				placeholder: 'Type to search',
+				noData: 'No Results!',
+				// 搜索标题的最大程级, 1 - 6
+				depth: 2
+			},
+			plugins: [
+				function (hook, vm) {
+					hook.beforeEach(function (html) {
+						if (/githubusercontent\.com/.test(vm.route.file)) {
+							url = vm.route.file
+								.replace('raw.githubusercontent.com', 'github.com')
+								.replace(/\/master/, '/blob/master')
+						} else {
+							url = 'https://github.com/fortress-fight/css/edit/master/' + vm.route.file
+						}
+						var editHtml = '[:memo: Edit Document](' + url + ')\n'
+
+						return editHtml +
+							html +
+							'\n\n----\n\n' +
+							'<a href="https://docsify.js.org" target="_blank" style="color: inherit; font-weight: normal; text-decoration: none;">Powered by docsify</a>'
+					})
+				}
+			]
 		}
 	</script>
 	<script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
 	<script src="//unpkg.com/docsify-copy-code"></script>
 	<script src="//unpkg.com/docsify-pagination/dist/docsify-pagination.min.js"></script>
-	<script src="//unpkg.com/docsify-edit-on-github@1.0.1/index.js"></script>
-	<script>
-		// EditOnGithubPlugin.create('git@github.com:fortress-fight/css.git')
-	</script>
+	<script src="//unpkg.com/docsify/lib/plugins/search.js"></script>
 </body>
 
 </html>
